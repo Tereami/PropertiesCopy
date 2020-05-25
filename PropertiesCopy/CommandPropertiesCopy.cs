@@ -84,6 +84,8 @@ namespace PropertiesCopy
 
                         foreach (Parameter param in parameters)
                         {
+                            if (param == null) continue;
+                            if (!param.HasValue) continue;
                             try
                             {
                                 Parameter curParam = curElem.get_Parameter(param.Definition);
