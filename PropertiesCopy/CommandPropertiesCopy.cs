@@ -1,11 +1,24 @@
-﻿using System;
+﻿#region License
+/*Данный код опубликован под лицензией Creative Commons Attribution-NonСommercial-ShareAlike.
+Разрешено использовать, распространять, изменять и брать данный код за основу для производных 
+в некоммерческих целях, при условии указания авторства и если производные лицензируются на тех же условиях.
+Код поставляется "как есть". Автор не несет ответственности за возможные последствия использования.
+Зуев Александр, 2021, все права защищены.
+This code is listed under the Creative Commons Attribution-NonСommercial-ShareAlike license.
+You may use, redistribute, remix, tweak, and build upon this work non-commercially,
+as long as you credit the author by linking back and license your new creations under the same terms.
+This code is provided 'as is'. Author disclaims any implied warranty.
+Zuev Aleksandr, 2021, all rigths reserved.*/
+#endregion
+#region usings
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+#endregion
 
 namespace PropertiesCopy
 {
@@ -15,11 +28,15 @@ namespace PropertiesCopy
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            Debug.Listeners.Clear();
+            Debug.Listeners.Add(new RbsLogger.Logger("PropertiesCopy"));
+
             Document doc = commandData.Application.ActiveUIDocument.Document;
             Selection sel = commandData.Application.ActiveUIDocument.Selection;
             Element firstElem;
 
             List<ElementId> selIds = sel.GetElementIds().ToList();
+            Debug.WriteLine("Selected elements: " + selIds.Count.ToString());
             if (selIds.Count > 0)
             {
                 firstElem = doc.GetElement(selIds.First());
@@ -37,15 +54,18 @@ namespace PropertiesCopy
                 }
 
                 firstElem = doc.GetElement(r1.ElementId);
+                Debug.WriteLine("First elem id: " + firstElem.Id.IntegerValue.ToString());
             }
 
             if (firstElem == null)
             {
                 message += "Что-то не получилось. Сохраняйте спокойствие и порядок!";
+                Debug.WriteLine("First elem is null");
                 return Result.Failed;
             }
 
             ParameterMap parameters = firstElem.ParametersMap;
+            Debug.WriteLine("Parameters found: " + parameters.Size.ToString());
 
             while (true)
             {
@@ -58,6 +78,7 @@ namespace PropertiesCopy
                     if (curId == null || curId == ElementId.InvalidElementId) continue;
                     Element curElem = doc.GetElement(curId);
                     if (curElem == null) continue;
+                    Debug.WriteLine("Cur element id: " + curId.IntegerValue.ToString());
 
                     try
                     {
@@ -72,6 +93,7 @@ namespace PropertiesCopy
                                 curElem.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).Set(firstTypeId);
 
                                 t1.Commit();
+                                Debug.WriteLine("Type of element is changed");
                             }
                         }
                     }
@@ -109,20 +131,24 @@ namespace PropertiesCopy
                                     default:
                                         break;
                                 }
+                                Debug.WriteLine("Param value is written: " + curParam.Definition.Name + " = " + curParam.AsValueString());
                             }
-                            catch
+                            catch(Exception ex)
                             {
+                                Debug.WriteLine(ex.Message);
                                 continue;
                             }
                         }
                         t.Commit();
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Debug.WriteLine(ex.Message);
                     return Result.Succeeded;
                 }
             }
+            Debug.WriteLine("All done");
         }
     }
 }

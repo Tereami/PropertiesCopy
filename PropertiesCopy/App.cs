@@ -1,11 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autodesk.Revit.DB;
+﻿#region License
+/*Данный код опубликован под лицензией Creative Commons Attribution-NonСommercial-ShareAlike.
+Разрешено использовать, распространять, изменять и брать данный код за основу для производных 
+в некоммерческих целях, при условии указания авторства и если производные лицензируются на тех же условиях.
+Код поставляется "как есть". Автор не несет ответственности за возможные последствия использования.
+Зуев Александр, 2021, все права защищены.
+This code is listed under the Creative Commons Attribution-NonСommercial-ShareAlike license.
+You may use, redistribute, remix, tweak, and build upon this work non-commercially,
+as long as you credit the author by linking back and license your new creations under the same terms.
+This code is provided 'as is'. Author disclaims any implied warranty.
+Zuev Aleksandr, 2021, all rigths reserved.*/
+#endregion
+
 using Autodesk.Revit.UI;
-using Autodesk.Revit.ApplicationServices;
 
 namespace PropertiesCopy
 {
@@ -18,7 +24,7 @@ namespace PropertiesCopy
         {
             assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-            string tabName = "Weandrevit";
+            string tabName = "BIM-STARTER";
             try { application.CreateRibbonTab(tabName); } catch { }
 
             RibbonPanel panel1 = application.CreateRibbonPanel(tabName, "Параметры");
@@ -28,8 +34,6 @@ namespace PropertiesCopy
                 assemblyPath,
                 "PropertiesCopy.CommandPropertiesCopy")
                 ) as PushButton;
-            //btn.LargeImage = PngImageSource("SchedulesTable.Resources.Schedules.png");
-            //btn.Image = PngImageSource("SchedulesTable.Resources.SchedulesSmall.png");
             btn.ToolTip = "Супер-копирование свойств! Копирует все параметры, в том числе марку, высоту стен, параметры армирования и так далее";
             return Result.Succeeded;
         }
@@ -38,6 +42,5 @@ namespace PropertiesCopy
         {
             return Result.Succeeded;
         }
-
     }
 }
