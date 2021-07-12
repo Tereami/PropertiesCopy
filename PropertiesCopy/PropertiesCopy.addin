@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">    
+    <Name>PropertiesCopy</Name>
+    <Assembly>
+      PropertiesCopy.dll
+    </Assembly>
+    <ClientId>a52912f7-cf1f-47c7-8dcf-dcd9646691d7</ClientId>
+    <FullClassName>PropertiesCopy.App</FullClassName>
+    <VendorId>IP Zuyev A</VendorId>
+    <VendorDescription>https://bim-starter.com/</VendorDescription>
+  </AddIn>
+</RevitAddIns>

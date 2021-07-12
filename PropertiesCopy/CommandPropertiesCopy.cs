@@ -148,7 +148,6 @@ namespace PropertiesCopy
                     return Result.Succeeded;
                 }
             }
-            Debug.WriteLine("All done");
         }
     }
 }

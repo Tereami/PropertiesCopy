@@ -24,17 +24,24 @@ namespace PropertiesCopy
         {
             assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-            string tabName = "BIM-STARTER";
+            string tabName = "BIM-STARTER TEST";
             try { application.CreateRibbonTab(tabName); } catch { }
 
             RibbonPanel panel1 = application.CreateRibbonPanel(tabName, "Параметры");
-            PushButton btn = panel1.AddItem(new PushButtonData(
+            PushButton btnCopy = panel1.AddItem(new PushButtonData(
                 "btnCopyProperties",
                 "Копирование\nсвойств",
                 assemblyPath,
                 "PropertiesCopy.CommandPropertiesCopy")
                 ) as PushButton;
-            btn.ToolTip = "Супер-копирование свойств! Копирует все параметры, в том числе марку, высоту стен, параметры армирования и так далее";
+
+            PushButton btnHost = panel1.AddItem(new PushButtonData(
+                "btnGetHost",
+                "Найти\nоснову",
+                assemblyPath,
+                "PropertiesCopy.CommandSelectHost")
+                ) as PushButton;
+
             return Result.Succeeded;
         }
 

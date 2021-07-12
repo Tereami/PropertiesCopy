@@ -35,74 +35,80 @@ namespace PropertiesCopy
             Document doc = uiDoc.Document;
             Selection sel = uiDoc.Selection;
             List<ElementId> selIds = sel.GetElementIds().ToList();
-            if(selIds.Count != 1)
+            if(selIds.Count == 0)
             {
                 message = "Выберите элемент, для которого нужно найти основу.";
                 return Result.Failed;
             }
-            Element selElem = doc.GetElement(selIds.First());
-            Debug.WriteLine("Selected elem id: " + selElem.Id.IntegerValue.ToString());
-            ElementId hostId = null;
 
+            List<ElementId> hostIds = new List<ElementId>();
 
-            if(selElem is AreaReinforcement)
+            foreach (ElementId elid in selIds)
             {
-                AreaReinforcement el = selElem as AreaReinforcement;
-                hostId = el.GetHostId();
-                Debug.WriteLine("It is area reinforcement");
-            }
-            if (selElem is PathReinforcement)
-            {
-                PathReinforcement el = selElem as PathReinforcement;
-                hostId = el.GetHostId();
-                Debug.WriteLine("It is path reinforcement");
-            }
-            if (selElem is Rebar)
-            {
-                Rebar el = selElem as Rebar;
-                hostId = el.GetHostId();
-                Debug.WriteLine("It is rebar");
-            }
-            if (selElem is RebarInSystem)
-            {
-                RebarInSystem el = selElem as RebarInSystem;
-                hostId = el.SystemId; 
-                Debug.WriteLine("It is rebar in system");
-            }
+                Element selElem = doc.GetElement(elid);
+                Debug.WriteLine("Selected elem id: " + selElem.Id.IntegerValue.ToString());
 
-            if (selElem is FamilyInstance)
-            {
-                FamilyInstance el = selElem as FamilyInstance;
-                Element host = el.Host;
-                if (host != null)
+                ElementId hostId = null;
+
+                if (selElem is AreaReinforcement)
                 {
-                    hostId = host.Id;
-                    Debug.WriteLine("It is family instance with host");
+                    AreaReinforcement el = selElem as AreaReinforcement;
+                    hostId = el.GetHostId();
+                    Debug.WriteLine("It is area reinforcement");
+                }
+                else if (selElem is PathReinforcement)
+                {
+                    PathReinforcement el = selElem as PathReinforcement;
+                    hostId = el.GetHostId();
+                    Debug.WriteLine("It is path reinforcement");
+                }
+                else if (selElem is Rebar)
+                {
+                    Rebar el = selElem as Rebar;
+                    hostId = el.GetHostId();
+                    Debug.WriteLine("It is rebar");
+                }
+                else if (selElem is RebarInSystem)
+                {
+                    RebarInSystem el = selElem as RebarInSystem;
+                    hostId = el.SystemId;
+                    Debug.WriteLine("It is rebar in system");
+                }
+                else if (selElem is FamilyInstance)
+                {
+                    FamilyInstance el = selElem as FamilyInstance;
+                    Element host = el.Host;
+                    if (host != null)
+                    {
+                        hostId = host.Id;
+                        Debug.WriteLine("It is family instance with host");
+                    }
+                    else
+                    {
+                        Element parentFamily = el.SuperComponent;
+                        if (parentFamily != null)
+                        {
+                            Debug.WriteLine("It is family instance with parent family");
+                            hostId = parentFamily.Id;
+                        }
+                    }
+                }
+
+                if (hostId == null)
+                {
+                    message = "Не удалось получить родительский элемент для элемента " + elid.IntegerValue.ToString();
+                    Debug.WriteLine("Host not found for element " + elid.IntegerValue.ToString());
+                    return Result.Failed;
                 }
                 else
                 {
-                    Element parentFamily = el.SuperComponent;
-                    if (parentFamily != null)
-                    {
-                        Debug.WriteLine("It is family instance with parent family");
-                        hostId = parentFamily.Id;
-                    }
+                    Debug.WriteLine("Host has found for element " + elid.IntegerValue.ToString());
+                    hostIds.Add(hostId);
                 }
             }
 
-
-            if (hostId == null)
-            {
-                message = "Не удалось получить родительский элемент.";
-                Debug.WriteLine("Host not found");
-                return Result.Failed;
-            }
-            else
-            {
-                sel.SetElementIds(new List<ElementId> { hostId });
-                Debug.WriteLine("Host id: " + hostId.IntegerValue.ToString());
-                return Result.Succeeded;
-            }
+            sel.SetElementIds(hostIds);
+            return Result.Succeeded;
         }
     }
 }
