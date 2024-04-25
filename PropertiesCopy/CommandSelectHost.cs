@@ -35,7 +35,7 @@ namespace PropertiesCopy
             Document doc = uiDoc.Document;
             Selection sel = uiDoc.Selection;
             List<ElementId> selIds = sel.GetElementIds().ToList();
-            if(selIds.Count == 0)
+            if (selIds.Count == 0)
             {
                 message = "Выберите элемент, для которого нужно найти основу.";
                 return Result.Failed;
@@ -46,7 +46,7 @@ namespace PropertiesCopy
             foreach (ElementId elid in selIds)
             {
                 Element selElem = doc.GetElement(elid);
-                Debug.WriteLine("Selected elem id: " + selElem.Id.IntegerValue.ToString());
+                Debug.WriteLine($"Selected elem id: {selElem.Id}");
 
                 ElementId hostId = null;
 
@@ -96,13 +96,13 @@ namespace PropertiesCopy
 
                 if (hostId == null)
                 {
-                    message = "Не удалось получить родительский элемент для элемента " + elid.IntegerValue.ToString();
-                    Debug.WriteLine("Host not found for element " + elid.IntegerValue.ToString());
+                    message = $"Не удалось получить родительский элемент для элемента id {elid}";
+                    Debug.WriteLine($"Host not found for element id {elid}");
                     return Result.Failed;
                 }
                 else
                 {
-                    Debug.WriteLine("Host has found for element " + elid.IntegerValue.ToString());
+                    Debug.WriteLine("Host is found for element id {elid}");
                     hostIds.Add(hostId);
                 }
             }

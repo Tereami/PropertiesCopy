@@ -54,7 +54,7 @@ namespace PropertiesCopy
                 }
 
                 firstElem = doc.GetElement(r1.ElementId);
-                Debug.WriteLine("First elem id: " + firstElem.Id.IntegerValue.ToString());
+                Debug.WriteLine($"First elem id: {firstElem.Id}");
             }
 
             if (firstElem == null)
@@ -78,7 +78,7 @@ namespace PropertiesCopy
                     if (curId == null || curId == ElementId.InvalidElementId) continue;
                     Element curElem = doc.GetElement(curId);
                     if (curElem == null) continue;
-                    Debug.WriteLine("Cur element id: " + curId.IntegerValue.ToString());
+                    Debug.WriteLine($"Cur element id: {curId}");
 
                     try
                     {
@@ -133,7 +133,7 @@ namespace PropertiesCopy
                                 }
                                 Debug.WriteLine("Param value is written: " + curParam.Definition.Name + " = " + curParam.AsValueString());
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 Debug.WriteLine(ex.Message);
                                 continue;
@@ -142,7 +142,7 @@ namespace PropertiesCopy
                         t.Commit();
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
                     return Result.Succeeded;
