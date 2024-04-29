@@ -28,15 +28,15 @@ namespace PropertiesCopy
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Debug.Listeners.Clear();
-            Debug.Listeners.Add(new RbsLogger.Logger("PropertiesCopy"));
+            Trace.Listeners.Clear();
+            Trace.Listeners.Add(new RbsLogger.Logger("PropertiesCopy"));
 
             Document doc = commandData.Application.ActiveUIDocument.Document;
             Selection sel = commandData.Application.ActiveUIDocument.Selection;
             Element firstElem;
 
             List<ElementId> selIds = sel.GetElementIds().ToList();
-            Debug.WriteLine("Selected elements: " + selIds.Count.ToString());
+            Trace.WriteLine("Selected elements: " + selIds.Count.ToString());
             if (selIds.Count > 0)
             {
                 firstElem = doc.GetElement(selIds.First());
@@ -54,18 +54,18 @@ namespace PropertiesCopy
                 }
 
                 firstElem = doc.GetElement(r1.ElementId);
-                Debug.WriteLine($"First elem id: {firstElem.Id}");
+                Trace.WriteLine($"First elem id: {firstElem.Id}");
             }
 
             if (firstElem == null)
             {
                 message += "Что-то не получилось. Сохраняйте спокойствие и порядок!";
-                Debug.WriteLine("First elem is null");
+                Trace.WriteLine("First elem is null");
                 return Result.Failed;
             }
 
             ParameterMap parameters = firstElem.ParametersMap;
-            Debug.WriteLine("Parameters found: " + parameters.Size.ToString());
+            Trace.WriteLine("Parameters found: " + parameters.Size.ToString());
 
             while (true)
             {
@@ -78,7 +78,7 @@ namespace PropertiesCopy
                     if (curId == null || curId == ElementId.InvalidElementId) continue;
                     Element curElem = doc.GetElement(curId);
                     if (curElem == null) continue;
-                    Debug.WriteLine($"Cur element id: {curId}");
+                    Trace.WriteLine($"Cur element id: {curId}");
 
                     try
                     {
@@ -93,7 +93,7 @@ namespace PropertiesCopy
                                 curElem.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).Set(firstTypeId);
 
                                 t1.Commit();
-                                Debug.WriteLine("Type of element is changed");
+                                Trace.WriteLine("Type of element is changed");
                             }
                         }
                     }
@@ -131,11 +131,11 @@ namespace PropertiesCopy
                                     default:
                                         break;
                                 }
-                                Debug.WriteLine("Param value is written: " + curParam.Definition.Name + " = " + curParam.AsValueString());
+                                Trace.WriteLine("Param value is written: " + curParam.Definition.Name + " = " + curParam.AsValueString());
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine(ex.Message);
+                                Trace.WriteLine(ex.Message);
                                 continue;
                             }
                         }
@@ -144,7 +144,7 @@ namespace PropertiesCopy
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Trace.WriteLine(ex.Message);
                     return Result.Succeeded;
                 }
             }

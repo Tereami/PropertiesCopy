@@ -28,8 +28,8 @@ namespace PropertiesCopy
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Debug.Listeners.Clear();
-            Debug.Listeners.Add(new RbsLogger.Logger("SelectHost"));
+            Trace.Listeners.Clear();
+            Trace.Listeners.Add(new RbsLogger.Logger("SelectHost"));
 
             UIDocument uiDoc = commandData.Application.ActiveUIDocument;
             Document doc = uiDoc.Document;
@@ -46,7 +46,7 @@ namespace PropertiesCopy
             foreach (ElementId elid in selIds)
             {
                 Element selElem = doc.GetElement(elid);
-                Debug.WriteLine($"Selected elem id: {selElem.Id}");
+                Trace.WriteLine($"Selected elem id: {selElem.Id}");
 
                 ElementId hostId = null;
 
@@ -54,25 +54,25 @@ namespace PropertiesCopy
                 {
                     AreaReinforcement el = selElem as AreaReinforcement;
                     hostId = el.GetHostId();
-                    Debug.WriteLine("It is area reinforcement");
+                    Trace.WriteLine("It is area reinforcement");
                 }
                 else if (selElem is PathReinforcement)
                 {
                     PathReinforcement el = selElem as PathReinforcement;
                     hostId = el.GetHostId();
-                    Debug.WriteLine("It is path reinforcement");
+                    Trace.WriteLine("It is path reinforcement");
                 }
                 else if (selElem is Rebar)
                 {
                     Rebar el = selElem as Rebar;
                     hostId = el.GetHostId();
-                    Debug.WriteLine("It is rebar");
+                    Trace.WriteLine("It is rebar");
                 }
                 else if (selElem is RebarInSystem)
                 {
                     RebarInSystem el = selElem as RebarInSystem;
                     hostId = el.SystemId;
-                    Debug.WriteLine("It is rebar in system");
+                    Trace.WriteLine("It is rebar in system");
                 }
                 else if (selElem is FamilyInstance)
                 {
@@ -81,14 +81,14 @@ namespace PropertiesCopy
                     if (host != null)
                     {
                         hostId = host.Id;
-                        Debug.WriteLine("It is family instance with host");
+                        Trace.WriteLine("It is family instance with host");
                     }
                     else
                     {
                         Element parentFamily = el.SuperComponent;
                         if (parentFamily != null)
                         {
-                            Debug.WriteLine("It is family instance with parent family");
+                            Trace.WriteLine("It is family instance with parent family");
                             hostId = parentFamily.Id;
                         }
                     }
@@ -97,12 +97,12 @@ namespace PropertiesCopy
                 if (hostId == null)
                 {
                     message = $"Не удалось получить родительский элемент для элемента id {elid}";
-                    Debug.WriteLine($"Host not found for element id {elid}");
+                    Trace.WriteLine($"Host not found for element id {elid}");
                     return Result.Failed;
                 }
                 else
                 {
-                    Debug.WriteLine("Host is found for element id {elid}");
+                    Trace.WriteLine("Host is found for element id {elid}");
                     hostIds.Add(hostId);
                 }
             }
