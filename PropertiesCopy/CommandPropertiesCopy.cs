@@ -11,13 +11,13 @@ This code is provided 'as is'. Author disclaims any implied warranty.
 Zuev Aleksandr, 2021, all rigths reserved.*/
 #endregion
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 #endregion
 
 namespace PropertiesCopy
@@ -46,7 +46,7 @@ namespace PropertiesCopy
                 Reference r1;
                 try
                 {
-                    r1 = sel.PickObject(ObjectType.Element, "Выберите элемент, с которого нужно скопировать свойства");
+                    r1 = sel.PickObject(ObjectType.Element, MyStrings.TextSelectElementToCopy);
                 }
                 catch
                 {
@@ -59,7 +59,7 @@ namespace PropertiesCopy
 
             if (firstElem == null)
             {
-                message += "Что-то не получилось. Сохраняйте спокойствие и порядок!";
+                message += MyStrings.ErrorSomethingWentWrong;
                 Trace.WriteLine("First elem is null");
                 return Result.Failed;
             }
@@ -72,7 +72,7 @@ namespace PropertiesCopy
                 try
                 {
                     SelectionFilter selFilter = new SelectionFilter(firstElem);
-                    Reference r = sel.PickObject(ObjectType.Element, selFilter, "Выберите элементы для копирования свойств");
+                    Reference r = sel.PickObject(ObjectType.Element, selFilter, MyStrings.TextSelectElementToCopy);
                     if (r == null) continue;
                     ElementId curId = r.ElementId;
                     if (curId == null || curId == ElementId.InvalidElementId) continue;
@@ -88,7 +88,7 @@ namespace PropertiesCopy
                         {
                             using (Transaction t1 = new Transaction(doc))
                             {
-                                t1.Start("Назначение типа");
+                                t1.Start(MyStrings.TransactionTypeCopy);
 
                                 curElem.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).Set(firstTypeId);
 
@@ -102,7 +102,7 @@ namespace PropertiesCopy
 
                     using (Transaction t = new Transaction(doc))
                     {
-                        t.Start("Копирование свойств");
+                        t.Start(MyStrings.TransactionPropertiesCopy);
 
                         foreach (Parameter param in parameters)
                         {

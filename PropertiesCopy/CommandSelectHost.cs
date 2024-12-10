@@ -11,14 +11,13 @@ This code is provided 'as is'. Author disclaims any implied warranty.
 Zuev Aleksandr, 2021, all rigths reserved.*/
 #endregion
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.DB.Structure;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 #endregion
 
 namespace PropertiesCopy
@@ -37,7 +36,7 @@ namespace PropertiesCopy
             List<ElementId> selIds = sel.GetElementIds().ToList();
             if (selIds.Count == 0)
             {
-                message = "Выберите элемент, для которого нужно найти основу.";
+                message = MyStrings.TextSelectElementToFindHost;
                 return Result.Failed;
             }
 
@@ -96,7 +95,7 @@ namespace PropertiesCopy
 
                 if (hostId == null)
                 {
-                    message = $"Не удалось получить родительский элемент для элемента id {elid}";
+                    message = $"{MyStrings.ErrorFailedToGetHost} {elid}";
                     Trace.WriteLine($"Host not found for element id {elid}");
                     return Result.Failed;
                 }
